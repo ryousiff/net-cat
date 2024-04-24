@@ -1,9 +1,11 @@
 package main
 
 import (
+	// "bufio"
 	"fmt"
 	"log"
 	"net"
+	netcat "netcat/func"
 	"os"
 )
 
@@ -22,17 +24,34 @@ func main() {
 	if len(os.Args) == 1 {
 		portnum = ":8989"
 	} else if len(os.Args) == 2 {
-		portnum = ":" + os.Args[2]
-
+		portnum = ":" + os.Args[1]
 	} else {
 		fmt.Println(" [USAGE]: ./TCPChat $port")
 	}
-	listen, err := net.Listen("tcp", portnum)
-	if err != nil {
-		fmt.Println("error:", err)
-		return
-	}
-	defer listen.Close()
-	fmt.Sprintf("server is listening on port %s \n", portnum)
 
+	listener, err := net.Listen("tcp", netcat.Netty()+portnum)
+	if err != nil {
+		log.Fatalf("Failed to start server: %v", err)
+	}
+	defer listener.Close()
+
+	ip := netcat.Netty()
+	// Log server's IP addresses
+	fmt.Println("Connected to server", ip)
+	fmt.Printf("Listening on port %s \n", portnum)
+	netcat.Address()
+fmt.Sprintf("server is listening on port %s \n", portnum)
+	
+
+for {
+	var Conn net.Conn
+	fmt.Println(Conn)
+	Conn, err := listener.Accept()
+	if err != nil {
+		log.Printf("Connection failed: %v", err)
+		continue
+	}
+	go netcat.Handler(Conn)
 }
+}
+
