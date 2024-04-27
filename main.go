@@ -40,18 +40,15 @@ func main() {
 	fmt.Println("Connected to server", ip)
 	fmt.Printf("Listening on port %s \n", portnum)
 	netcat.Address()
-fmt.Sprintf("server is listening on port %s \n", portnum)
-	
+	fmt.Sprintf("server is listening on port %s \n", portnum)
 
-for {
-	var Conn net.Conn
-	fmt.Println(Conn)
-	Conn, err := listener.Accept()
-	if err != nil {
-		log.Printf("Connection failed: %v", err)
-		continue
+	for {
+		var Conn net.Conn
+		Conn, err := listener.Accept()
+		if err != nil {
+			log.Printf("Connection failed: %v", err)
+			continue
+		}
+		go netcat.Handler(Conn)
 	}
-	go netcat.Handler(Conn)
 }
-}
-
