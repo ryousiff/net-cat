@@ -5,26 +5,27 @@ import (
 	"fmt"
 	"log"
 	"net"
-	netcat "netcat/func"
 	"os"
+
+	netcat "netcat/func"
 )
 
 func main() {
-	//create the log file
+	// create the log file
 	logFile, err := os.Create("log.txt")
 	if err != nil {
 		log.Fatal("error opening logfile :", err)
 	}
 	defer logFile.Close()
-	//save the chat
+	// save the chat
 	log.SetOutput(logFile)
 
-	//listening to port
+	// listening to port
 	var portnum string
 	if len(os.Args) == 1 {
-		portnum = ":8989"
+		portnum = ": 8989"
 	} else if len(os.Args) == 2 {
-		portnum = ":" + os.Args[1]
+		portnum = ": " + os.Args[1]
 	} else {
 		fmt.Println(" [USAGE]: ./TCPChat $port")
 	}
@@ -40,7 +41,7 @@ func main() {
 	fmt.Println("Connected to server", ip)
 	fmt.Printf("Listening on port %s \n", portnum)
 	netcat.Address()
-	fmt.Sprintf("server is listening on port %s \n", portnum)
+	fmt.Sprintf("server is listening on port  %s \n", portnum)
 
 	for {
 		var Conn net.Conn
@@ -49,6 +50,9 @@ func main() {
 			log.Printf("Connection failed: %v", err)
 			continue
 		}
+		netcat.Broadcast(fmt.Sprintf("%s has joined our chat...", netcat.Clients.Name))
+		log.Printf("Client [%s] connected: %s\n", netcat.Clients.Name, Conn.RemoteAddr().String())
+
 		go netcat.Handler(Conn)
 	}
 }

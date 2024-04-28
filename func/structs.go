@@ -1,16 +1,21 @@
 package netcat
 
 import (
-    "net"
-	"bufio"
+	"net"
+	"sync"
+	// "bufio"
 )
 
-
 type client struct {
-	Network net.Conn 
-	Name string
-	Reader *bufio.Reader
+	Network net.Conn
+	Name    string
+	// Reader *bufio.Reader
 }
 
-
-var Clients client 
+var (
+	muclient   sync.Mutex
+	allClients = make(map[string]*client)
+	muhistory sync.Mutex
+	history []string
+)
+var Clients client
