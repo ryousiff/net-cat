@@ -23,9 +23,9 @@ func main() {
 	// listening to port
 	var portnum string
 	if len(os.Args) == 1 {
-		portnum = ": 8989"
+		portnum = ":8989"
 	} else if len(os.Args) == 2 {
-		portnum = ": " + os.Args[1]
+		portnum = ":" + os.Args[1]
 	} else {
 		fmt.Println(" [USAGE]: ./TCPChat $port")
 	}
@@ -39,9 +39,8 @@ func main() {
 	ip := netcat.Netty()
 	// Log server's IP addresses
 	fmt.Println("Connected to server", ip)
-	fmt.Printf("Listening on port %s \n", portnum)
 	netcat.Address()
-	fmt.Sprintf("server is listening on port  %s \n", portnum)
+	fmt.Printf("server is listening on port  %s \n", portnum)
 
 	for {
 		var Conn net.Conn
@@ -50,9 +49,8 @@ func main() {
 			log.Printf("Connection failed: %v", err)
 			continue
 		}
-		netcat.Broadcast(fmt.Sprintf("%s has joined our chat...", netcat.Clients.Name))
-		log.Printf("Client [%s] connected: %s\n", netcat.Clients.Name, Conn.RemoteAddr().String())
-
+		log.Printf("%s has join the chat..\n", netcat.Clients.Name)
 		go netcat.Handler(Conn)
+
 	}
 }

@@ -3,12 +3,10 @@ package netcat
 import (
 	"bufio"
 	"fmt"
-	"strings"
-
-	// "io"
 	"io/ioutil"
 	"log"
 	"net"
+	"strings"
 	"time"
 )
 
@@ -38,7 +36,7 @@ invalidStatment:
 		return
 	}
 	name = strings.TrimSpace(name)
-	if name == "" || name == " " || strings.Contains(name, " ") || strings.Contains(name, "\033") || strings.Contains(name, "\n") || strings.Contains(name, "\t") {
+	if name == "" || name == " " || strings.Contains(name, " ") || strings.Contains(name, "\033") || strings.Contains(name, "\n") {
 		goto invalidStatment
 	}
 
@@ -64,12 +62,24 @@ invalidStatment:
 	muclient.Unlock()
 	network.Write([]byte(fmt.Sprintf("Welcome %s!\n", name)))
 
+	Broadcast(fmt.Sprintf("%s has joined the chat... \n", clinet.Name))
+
+	muhistory.Lock()
+	for _, message := range history {
+		_, err := clinet.Network.Write([]byte(message))
+		log.Print(message)
+		if err != nil {
+			log.Printf("Error sending past message to %s: %v", clinet.Name, err)
+			break
+		}
+	}
+	muhistory.Unlock()
 	for {
 		network.Write([]byte(fmt.Sprintf("\n[%s]:", name)))
 		msg, err := Reader.ReadString('\n')
 		if err != nil {
 			fmt.Printf("Connection failed: %v", err)
-			return
+			break
 		}
 		msg = strings.TrimSpace(msg)
 		if msg == "" || strings.Contains(msg, "\033") || strings.Contains(msg, "\n") {
@@ -77,45 +87,29 @@ invalidStatment:
 		}
 
 		Broadcast(fmt.Sprintf("\n[%s] [%s]: %s\n", time.Now().Format("02-01-2006: 15:04:05"), name, msg))
-
+		log.Print(msg)
 	}
-	fmt.Sprintf("%s has left our chat...", Clients.Name)
+	RemoveClient(Clients)
+	Broadcast(fmt.Sprintf("%s has left our chat...\n", name))
+
 }
 
 func Broadcast(message string) {
 	for _, client := range allClients {
 		client.Network.Write([]byte(message))
+		muhistory.Lock()
+		history = append(history, message)
+		muhistory.Unlock()
 	}
 }
 
-// Broadcast("Server", fmt.Sprintf("%s has joined the chat.. ", clinet.Name))
-// Broadcast(fmt.Sprintf("%s has left our chat...", Clients.Name))
-
-// func Broadcast(sender, message string) {
-// 	muclient.Lock()
-// 	defer muclient.Unlock()
-// 	formatted := ""
-// 	if sender == "Server" && strings.Contains(message, "has left the chat..") || strings.Contains(message, "has joined the chat..") || strings.Contains(message, "is now known as") {
-// 		formatted = fmt.Sprintf("%s\n", message)
-// 		for _, client := range allClients {
-// 			if !strings.Contains(message, client.Name) {
-// 				_, err := client.Network.Write([]byte(formatted))
-// 				if err != nil {
-// 					log.Printf("Failed to send message to %s: %v", client.Name, err)
-// 				}
-// 			}
-// 		}
-
-//		} else {
-//			formatted = fmt.Sprintf("[%s],[%s]:\n %s \n", time.Now().Format("02-01-2006: 15:04:05"), sender, message)
-//			muhistory.Lock()
-//			history = append(history, formatted)
-//			muhistory.Unlock()
-//			for _, client := range allClients {
-//				_, err := client.Network.Write([]byte(formatted))
-//				if err != nil {
-//					log.Printf("Failed to send message to %s: %v", client.Name, err)
-//				}
-//			}
-//		}
-//	}
+func RemoveClient(clients client) {
+	for i, c := range arrayofclient {
+		if c == clients {
+			muclient.Lock()
+			arrayofclient = append(arrayofclient[:i], arrayofclient[i+1:]...)
+			muclient.Unlock()
+			break
+		}
+	}
+}

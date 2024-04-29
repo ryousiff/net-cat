@@ -1,7 +1,2 @@
-2024/04/28 21:51:55 Server accessible at IP: 10.1.201.193
-2024/04/28 21:51:56 Client [] connected: 10.1.201.193:39120
-2024/04/28 21:51:56 Welcome to TCP-Chat!
-2024/04/28 21:52:00 Client [] connected: 10.1.201.193:39128
-2024/04/28 21:52:00 Welcome to TCP-Chat!
-2024/04/28 21:53:07 Client [] connected: 10.1.201.193:41962
-2024/04/28 21:53:07 Welcome to TCP-Chat!
+2024/04/29 22:42:25 Server accessible at IP: 10.1.201.206
+2024/04/29 22:42:25 Server accessible at IP: 172.17.0.1

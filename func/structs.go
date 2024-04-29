@@ -3,7 +3,6 @@ package netcat
 import (
 	"net"
 	"sync"
-	// "bufio"
 )
 
 type client struct {
@@ -19,3 +18,4 @@ var (
 	history []string
 )
 var Clients client
+var arrayofclient []client
