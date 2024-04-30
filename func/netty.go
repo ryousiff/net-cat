@@ -18,17 +18,17 @@ func Netty() string {
 
 	func Address() {
 
-	add, err := net.InterfaceAddrs()
+	_, err := net.InterfaceAddrs()
 	if err!= nil {
 		log.Println("Failed to get local IP addresses:", err)
     }
 
-	for _, address := range add {
-		if ipnet, ok := address.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
-			if ipnet.IP.To4() != nil {
-				log.Printf("Server accessible at IP: %s", ipnet.IP.String())
+	// for _, address := range add {
+	// 	if ipnet, ok := address.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
+	// 		if ipnet.IP.To4() != nil {
+	// 			log.Printf("Server accessible at IP: %s", ipnet.IP.String())
 				
-			}
-		}
-	}
+	// 		}
+	// 	}
+	// }
 }

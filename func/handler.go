@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	// "os/signal"
 	"net"
 	"strings"
 	"time"
 )
 
-func welcome() string {
-	message, err := ioutil.ReadFile("penguin.txt")
+func Welcome() string {
+	message, err := ioutil.ReadFile("penguin.txt") 
 	if err != nil {
 		log.Fatal("error displaying welcome image: ", err)
 	}
@@ -19,10 +20,19 @@ func welcome() string {
 	return string(message) + "\n"
 }
 
+func PrevChat() string {
+	message, err := ioutil.ReadFile("log.txt") 
+	if err != nil {
+		log.Fatal("error displaying welcome image: ", err)
+	}
+	return string(message) + "\n"
+}
+
 func Handler(network net.Conn) {
 	defer network.Close()
+	// rere := bufio.NewReader(os.Stdin)
 
-	msg := welcome()
+	msg := Welcome()
 invalidStatment:
 	network.Write([]byte(msg + "\n"))
 	network.Write([]byte("Enter your name: "))
@@ -42,6 +52,7 @@ invalidStatment:
 
 	muclient.Lock()
 	if _, exist := allClients[name]; exist {
+
 		muclient.Unlock()
 		network.Write([]byte("This name is already taken.\n"))
 		goto invalidStatment
@@ -61,8 +72,11 @@ invalidStatment:
 
 	muclient.Unlock()
 	network.Write([]byte(fmt.Sprintf("Welcome %s!\n", name)))
+	g := PrevChat()
+	network.Write([]byte(g + "\n"))
 
-	Broadcast(fmt.Sprintf("%s has joined the chat... \n", clinet.Name))
+
+	Broadcast(fmt.Sprintf("\n%s has joined our chat... \n", clinet.Name))
 
 	muhistory.Lock()
 	for _, message := range history {
@@ -75,7 +89,7 @@ invalidStatment:
 	}
 	muhistory.Unlock()
 	for {
-		network.Write([]byte(fmt.Sprintf("\n[%s]:", name)))
+		// network.Write([]byte(fmt.Sprintf("\n[%s]:", name)))
 		msg, err := Reader.ReadString('\n')
 		if err != nil {
 			fmt.Printf("Connection failed: %v", err)
@@ -90,7 +104,7 @@ invalidStatment:
 		log.Print(msg)
 	}
 	RemoveClient(Clients)
-	Broadcast(fmt.Sprintf("%s has left our chat...\n", name))
+	Broadcast(fmt.Sprintf("\n%s has left our chat...\n", name))
 
 }
 
@@ -98,7 +112,7 @@ func Broadcast(message string) {
 	for _, client := range allClients {
 		client.Network.Write([]byte(message))
 		muhistory.Lock()
-		history = append(history, message)
+		// history = append(history, message)
 		muhistory.Unlock()
 	}
 }

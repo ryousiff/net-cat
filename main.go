@@ -19,7 +19,7 @@ func main() {
 	defer logFile.Close()
 	// save the chat
 	log.SetOutput(logFile)
-
+	
 	// listening to port
 	var portnum string
 	if len(os.Args) == 1 {
@@ -27,7 +27,7 @@ func main() {
 	} else if len(os.Args) == 2 {
 		portnum = ":" + os.Args[1]
 	} else {
-		fmt.Println(" [USAGE]: ./TCPChat $port")
+		fmt.Println("[USAGE]: ./TCPChat $port")
 	}
 
 	listener, err := net.Listen("tcp", netcat.Netty()+portnum)
