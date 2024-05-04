@@ -13,9 +13,9 @@ type client struct {
 
 var (
 	muclient   sync.Mutex
-	allClients = make(map[string]*client)
+	// allClients = make(map[string]*client)
 	// muhistory sync.Mutex
 	// history []string
 )
-var Clients client
-var arrayofclient []client
+var clients []*client
+// var arrayofclient []client

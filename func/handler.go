@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"log"
 
+	// netcat "netcat/func"
+
 	// "os/signal"
 	"net"
 	"strings"
@@ -52,24 +54,29 @@ invalidStatment:
 	}
 
 	muclient.Lock()
-	if _, exist := allClients[name]; exist {
-
-		muclient.Unlock()
-		network.Write([]byte("This name is already taken.\n"))
-		goto invalidStatment
+	// i want a to check if the name already exists in the clients struct
+	// if it does, then it will write to the network of the client and it will goto invalidstatment
+	// if it does not, then it will add the client to the clients struct
+	// and then it will write to the network of the client and it will goto invalidstatment
+	for _, client := range clients {
+		if client.Name == name {
+			muclient.Unlock()
+			network.Write([]byte("name already taken"))
+			goto invalidStatment
+		}
 	}
-	if len(allClients) >= 10 {
+	if len(clients) >= 10 {
 		muclient.Unlock()
 		network.Write([]byte("maximum client count exceeded"))
 		return
 	}
 	network.SetReadDeadline(time.Time{})
 
-	clinet := &client{
+	client := &client{
 		Network: network,
-		Name:    name,
 	}
-	allClients[name] = clinet
+	client.Name = name
+	clients = append(clients, client)
 
 	muclient.Unlock()
 	log.Printf("%s has join the chat..\n", name)
@@ -77,14 +84,14 @@ invalidStatment:
 	g := PrevChat()
 	network.Write([]byte(g + "\n"))
 
-	Broadcast(fmt.Sprintf("\n%s has joined our chat... \n", clinet.Name))
+	Broadcast(fmt.Sprintf("\n%s has joined our chat... \n", client.Name))
 
 	// muhistory.Lock()
 	// for _, message := range history {
-	// 	_, err := clinet.Network.Write([]byte(message))
+	// 	_, err := client.Network.Write([]byte(message))
 	// 	log.Print(message)
 	// 	if err != nil {
-	// 		log.Printf("Error sending past message to %s: %v", clinet.Name, err)
+	// 		log.Printf("Error sending past message to %s: %v", client.Name, err)
 	// 		break
 	// 	}
 	// }
@@ -104,13 +111,13 @@ invalidStatment:
 		Broadcast(fmt.Sprintf("\n[%s] [%s]: %s\n", time.Now().Format("02-01-2006: 15:04:05"), name, msg))
 		log.Print(msg)
 	}
-	RemoveClient(Clients)
+	RemoveClient(client)
 	Broadcast(fmt.Sprintf("\n%s has left our chat...\n", name))
 
 }
 
 func Broadcast(message string) {
-	for _, client := range allClients {
+	for _, client := range clients {
 		client.Network.Write([]byte(message))
 		// muhistory.Lock()
 		// history = append(history, message)
@@ -118,11 +125,11 @@ func Broadcast(message string) {
 	}
 }
 
-func RemoveClient(clients client) {
-	for i, c := range arrayofclient {
-		if c == clients {
+func RemoveClient(client *client) {
+	for i, c := range clients {
+		if c == client {
 			muclient.Lock()
-			arrayofclient = append(arrayofclient[:i], arrayofclient[i+1:]...)
+			clients = append(clients[:i], clients[i+1:]...)
 			muclient.Unlock()
 			break
 		}
