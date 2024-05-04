@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+
 	// "os/signal"
 	"net"
 	"strings"
@@ -12,16 +13,16 @@ import (
 )
 
 func Welcome() string {
-	message, err := ioutil.ReadFile("penguin.txt") 
+	message, err := ioutil.ReadFile("penguin.txt")
 	if err != nil {
 		log.Fatal("error displaying welcome image: ", err)
 	}
-	log.Printf("Welcome to TCP-Chat!\n")
+	// .Printf("Welcome to TCP-Chat!\n")
 	return string(message) + "\n"
 }
 
 func PrevChat() string {
-	message, err := ioutil.ReadFile("log.txt") 
+	message, err := ioutil.ReadFile("log.txt")
 	if err != nil {
 		log.Fatal("error displaying welcome image: ", err)
 	}
@@ -71,23 +72,23 @@ invalidStatment:
 	allClients[name] = clinet
 
 	muclient.Unlock()
+	log.Printf("%s has join the chat..\n", name)
 	network.Write([]byte(fmt.Sprintf("Welcome %s!\n", name)))
 	g := PrevChat()
 	network.Write([]byte(g + "\n"))
 
-
 	Broadcast(fmt.Sprintf("\n%s has joined our chat... \n", clinet.Name))
 
-	muhistory.Lock()
-	for _, message := range history {
-		_, err := clinet.Network.Write([]byte(message))
-		log.Print(message)
-		if err != nil {
-			log.Printf("Error sending past message to %s: %v", clinet.Name, err)
-			break
-		}
-	}
-	muhistory.Unlock()
+	// muhistory.Lock()
+	// for _, message := range history {
+	// 	_, err := clinet.Network.Write([]byte(message))
+	// 	log.Print(message)
+	// 	if err != nil {
+	// 		log.Printf("Error sending past message to %s: %v", clinet.Name, err)
+	// 		break
+	// 	}
+	// }
+	// muhistory.Unlock()
 	for {
 		// network.Write([]byte(fmt.Sprintf("\n[%s]:", name)))
 		msg, err := Reader.ReadString('\n')
@@ -111,9 +112,9 @@ invalidStatment:
 func Broadcast(message string) {
 	for _, client := range allClients {
 		client.Network.Write([]byte(message))
-		muhistory.Lock()
+		// muhistory.Lock()
 		// history = append(history, message)
-		muhistory.Unlock()
+		// muhistory.Unlock()
 	}
 }
 

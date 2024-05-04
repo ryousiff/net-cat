@@ -49,7 +49,7 @@ func main() {
 			log.Printf("Connection failed: %v", err)
 			continue
 		}
-		log.Printf("%s has join the chat..\n", netcat.Clients.Name)
+		// log.Printf("%s has join the chat..\n", netcat.Clients.Name)
 		go netcat.Handler(Conn)
 
 	}
