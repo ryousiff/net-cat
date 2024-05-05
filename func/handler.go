@@ -61,13 +61,13 @@ invalidStatment:
 	for _, client := range clients {
 		if client.Name == name {
 			muclient.Unlock()
-			network.Write([]byte("name already taken"))
+			network.Write([]byte("name already taken\n\n"))
 			goto invalidStatment
 		}
 	}
 	if len(clients) >= 10 {
-		muclient.Unlock()
 		network.Write([]byte("maximum client count exceeded"))
+		muclient.Unlock()
 		return
 	}
 	network.SetReadDeadline(time.Time{})
@@ -100,7 +100,7 @@ invalidStatment:
 		// network.Write([]byte(fmt.Sprintf("\n[%s]:", name)))
 		msg, err := Reader.ReadString('\n')
 		if err != nil {
-			fmt.Printf("Connection failed: %v", err)
+			// fmt.Printf("failed: %v", err)
 			break
 		}
 		msg = strings.TrimSpace(msg)

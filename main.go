@@ -23,7 +23,7 @@ func main() {
 	// listening to port
 	var portnum string
 	if len(os.Args) == 1 {
-		portnum = ":8989"
+		portnum = "8989"
 	} else if len(os.Args) == 2 {
 		portnum = ":" + os.Args[1]
 	} else {
@@ -38,9 +38,9 @@ func main() {
 
 	ip := netcat.Netty()
 	// Log server's IP addresses
-	fmt.Println("Connected to server", ip)
+	fmt.Println("Connected to server: ", ip)
 	netcat.Address()
-	fmt.Printf("server is listening on port  %s \n", portnum)
+	fmt.Printf("server is listening on port%s \n", portnum)
 
 	for {
 		var Conn net.Conn

@@ -177,15 +177,15 @@ Bonus
     Find a way to save all the logs into a file.
     Creating more than 1 group chat.
 
-This project will help you learn about :
+## This project will help you learn about :
 
-    Manipulation of structures.
-    Net-Cat
-    TCP/UDP
-        TCP/UDP connection
-        TCP/UDP socket
-    Go concurrency
-        Channels
-        Goroutines
-    Mutexes
-    IP and ports
+ 1. Manipulation of structures.
+    2. Net-Cat
+    3. TCP/UDP
+    4. TCP/UDP connection
+    5. TCP/UDP socket
+    6. Go concurrency
+    7. Channels
+    8. Goroutines
+    9. Mutexes
+    10. IP and ports
