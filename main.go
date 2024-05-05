@@ -23,7 +23,7 @@ func main() {
 	// listening to port
 	var portnum string
 	if len(os.Args) == 1 {
-		portnum = "8989"
+		portnum = ":8989"
 	} else if len(os.Args) == 2 {
 		portnum = ":" + os.Args[1]
 	} else {
