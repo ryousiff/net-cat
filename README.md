@@ -15,10 +15,11 @@ Default Port: Use port 8989 if no port is specified.
 
 # Start the TCP Server:
 
-$ go run .
+$ go run . \n
 Listening on the port :8989
 
-$ go run . 2525
+$ go run . 2525 \n
+
 Listening on the port :2525
 
 # Client Connection:
